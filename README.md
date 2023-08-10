@@ -29,6 +29,8 @@ go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 ```bash
 sudo apt update && sudo apt install -y feroxbuster
 ```
+* zap: install zap.sh from official site
+* nmap: ```sudo apt install nmap```
 ## Usage
 
 Run it with sudo
@@ -41,9 +43,17 @@ sudo python3 zacky_recon.py
 It will prompt you to insert 3 things to make the script working:
 * the type of scan that will run with nuclei (simple= just nuclei scan(nuclei -l domain.txt) specific= nuclei scan with specific template to usage)
 * if the choice is specific you will have to insert the template path
-
-### zap passive scan functionality will be released soon
 * the domain to test
+
+### if you would like to use only certain functionalities of the script just comment the line that execute the functionality; for example if you don't want to use feroxbuster dir enum func comment like this:
+
+```
+#with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+#        executor.map(run_feroxbuster, active_subdomain_list)
+```
 
 After this few things you can chill and take a cofee
 
+### zap passive scan functionality will be released soon
+
+### nmap implementation

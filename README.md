@@ -54,6 +54,3 @@ It will prompt you to insert 3 things to make the script working:
 
 After this few things you can chill and take a cofee
 
-### zap passive scan functionality will be released soon
-
-### nmap implementation

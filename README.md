@@ -9,23 +9,23 @@ Python script for bounty simple life.
 
 
 * GO:
-'''bash
+```bash
 sudo apt install golang
-'''
+```
 or just go to the official site
 * Subfinder:
-'''
+```bash
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-'''bash
+```
 * python3:
-'''
+```bash
 sudo apt install python3
-'''bash
+```
 * nuclei:
-'''
+```bash
 go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-'''bash
+```
 * feroxbuster:
-'''
+```bash
 sudo apt update && sudo apt install -y feroxbuster
-'''bash
+```

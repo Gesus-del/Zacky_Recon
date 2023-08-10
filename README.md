@@ -54,3 +54,4 @@ It will prompt you to insert 3 things to make the script working:
 
 After this few things you can chill and take a cofee
 
+#### Implementation of parallelize tasks for better usage and less time usage will be release soon

@@ -33,6 +33,8 @@ sudo apt update && sudo apt install -y feroxbuster
 * nmap: ```sudo apt install nmap```
 ## Usage
 
+* install requirements.txt
+
 Run it with sudo
 
 ```bash

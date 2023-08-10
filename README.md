@@ -41,6 +41,8 @@ sudo python3 zacky_recon.py
 It will prompt you to insert 3 things to make the script working:
 * the type of scan that will run with nuclei (simple= just nuclei scan(nuclei -l domain.txt) specific= nuclei scan with specific template to usage)
 * if the choice is specific you will have to insert the template path
+
+### zap passive scan functionality will be released soon
 * the domain to test
 
 After this few things you can chill and take a cofee

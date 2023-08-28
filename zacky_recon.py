@@ -2,11 +2,7 @@ import requests
 import os
 import subprocess
 import concurrent.futures
-
-# Function to check if a subdomain is active
-def is_active(subdomain):
-    response = os.system(f"ping -c 1 {subdomain} > /dev/null 2>&1")
-    return response == 0
+import httpx
 
 # Function to run feroxbuster
 def run_feroxbuster(subdomain):
@@ -83,36 +79,37 @@ def main():
         return
 
     target_domain = input("Enter the target domain: ")
+    # Run subfinder to get subdomains
+
+    # Create a folder for the target domain
+    folder_name = f"{target_domain}_scan"
+    os.makedirs(folder_name, exist_ok=True)
+
+    # Set the working directory to the created folder
+    os.chdir(folder_name)
+
     subdomains_file = f"{target_domain}_subdomains.txt"
-    subprocess.run(["sudo", "subfinder", "-all", "-d", target_domain, "-o", subdomains_file])
+    subprocess.run(["subfinder", "-d", target_domain, "-o", subdomains_file])
 
-    active_subdomains_file = f"{target_domain}_active_subdomains_1.txt"
-
-    with open(subdomains_file, 'r') as subdomains, open(active_subdomains_file, 'w') as active_subdomains:
+    with open(subdomains_file, 'r') as subdomains:
         subdomain_list = [line.strip() for line in subdomains]
 
-        print("Checking active or not subdomains, be quiet brody...")
+        if scan_type == "simple":
+            nuclei_output_file = f"nuclei-{target_domain}.txt"
+            subprocess.run(["sudo", "nuclei", "-l", subdomains_file, "-o", nuclei_output_file])
+        elif scan_type == "specific":
+            nuclei_output_file = f"nuclei-{target_domain}.txt"
+            subprocess.run(["sudo", "nuclei", "-l", subdomains_file, "-t", template_path, "-o", nuclei_output_file])
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            active_subdomain_list = list(filter(is_active, subdomain_list))
-            active_subdomains.writelines([sub + '\n' for sub in active_subdomain_list])
+            executor.map(run_feroxbuster, subdomain_list)
 
-    if scan_type == "simple":
-        nuclei_output_file = f"nuclei-{target_domain}.txt"
-        subprocess.run(["sudo", "nuclei", "-l", active_subdomains_file, "-o", nuclei_output_file])
-    elif scan_type == "specific":
-        nuclei_output_file = f"nuclei-{target_domain}.txt"
-        subprocess.run(["sudo", "nuclei", "-l", active_subdomains_file, "-t", template_path, "-o", nuclei_output_file])
+        # Perform OWASP ZAP passive scan on each subdomain
+        for subdomain in subdomain_list:
+            run_zap_passive_scan(subdomain)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-         executor.map(run_feroxbuster, active_subdomain_list)
-
-    # Perform OWASP ZAP passive scan on each active subdomain
-    for subdomain in active_subdomain_list:
-        run_zap_passive_scan(subdomain)
-
-    # Run the port scan
-    run_port_scan(target_domain)
+        # Run the port scan
+        run_port_scan(target_domain)
 
 if __name__ == "__main__":
     main()

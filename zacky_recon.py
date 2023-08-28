@@ -10,9 +10,9 @@ def run_burp_suite_scan(subdomain):
         "curl",
         "-vgw", "\\n",
         "-X", "POST",
-        "http://127.0.0.1:1337/"<apikey>"/v0.1/scan",
+        "http://127.0.0.1:1337/<api-key>/v0.1/scan",
         "-d",
-        '{"application_logins":[],"scan_configurations":[{"name":"<configuration>","type":"NamedConfiguration"},{"name":"Add all links to site map","type":"NamedConfiguration"},{"name":"Add requested item to site map","type":"NamedConfiguration"}],"urls":["https://' + subdomain + '"]}'
+        '{"application_logins":[],"scan_configurations":[{"name":"Configuration","type":"NamedConfiguration"},{"name":"Add all links to site map","type":"NamedConfiguration"},{"name":"Add requested item to site map","type":"NamedConfiguration"}],"urls":["https://' + subdomain + '"]}'
     ]
 
     try:
@@ -105,6 +105,7 @@ def main():
     # Set the working directory to the created folder
     os.chdir(folder_name)
 
+    # Run subfinder to get subdomains and generate the subdomains file
     subdomains_file = f"{target_domain}_subdomains.txt"
     subprocess.run(["subfinder", "-d", target_domain, "-o", subdomains_file])
 
@@ -123,14 +124,14 @@ def main():
 
         # Perform OWASP ZAP passive scan on each subdomain
         for subdomain in subdomain_list:
-           run_zap_passive_scan(subdomain)
+            run_zap_passive_scan(subdomain)
 
         # Run the port scan
         run_port_scan(target_domain)
-        
-    # Perform Burp Suite scan on each subdomain
-    for subdomain in subdomain_list:
-        run_burp_suite_scan(subdomain) 
+
+        # Perform Burp Suite scan on each subdomain
+        for subdomain in subdomain_list:
+            run_burp_suite_scan(subdomain)
 
 if __name__ == "__main__":
     main()

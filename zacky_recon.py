@@ -3,6 +3,23 @@ import os
 import subprocess
 import concurrent.futures
 import httpx
+import subprocess
+
+def run_burp_suite_scan(subdomain):
+    burp_api_command = [
+        "curl",
+        "-vgw", "\\n",
+        "-X", "POST",
+        "http://127.0.0.1:1337/"<apikey>"/v0.1/scan",
+        "-d",
+        '{"application_logins":[],"scan_configurations":[{"name":"<configuration>","type":"NamedConfiguration"},{"name":"Add all links to site map","type":"NamedConfiguration"},{"name":"Add requested item to site map","type":"NamedConfiguration"}],"urls":["https://' + subdomain + '"]}'
+    ]
+
+    try:
+        subprocess.run(burp_api_command, check=True)
+        print(f"Burp Suite Red Team scan started for {subdomain}")
+    except subprocess.CalledProcessError:
+        print(f"Failed to start Burp Suite Red Team scan for {subdomain}")
 
 # Function to run feroxbuster
 def run_feroxbuster(subdomain):
@@ -106,10 +123,14 @@ def main():
 
         # Perform OWASP ZAP passive scan on each subdomain
         for subdomain in subdomain_list:
-            run_zap_passive_scan(subdomain)
+           run_zap_passive_scan(subdomain)
 
         # Run the port scan
         run_port_scan(target_domain)
+        
+    # Perform Burp Suite scan on each subdomain
+    for subdomain in subdomain_list:
+        run_burp_suite_scan(subdomain) 
 
 if __name__ == "__main__":
     main()
